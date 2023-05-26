@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define PILHA_VAZIA "\nA pilha está vazia!\n"
+#define PILHA_CHEIA "\nA pilha está cheia!\n"
+
+typedef struct peca Pecas;
+
+struct peca {
+    int topo;
+    int qtd;
+    float *pPeca;
+};
+
+void criarPilha(Pecas *p, int qtdePos){
+    p->topo = -1;
+    p->qtd = qtdePos;
+    p->pPeca = (float*) malloc (qtdePos * sizeof(float));
+}
+
+int pilhaVazia(Pecas *p){
+    if(p->topo == -1)
+        return 1;
+    else
+        return 0;
+}
+
+int pilhaCheia(Pecas *p){
+    int retorno = 0;
+
+    if (p->topo == p->qtd - 1)
+        retorno = 1;
+
+    return retorno;
+}
+
+void empilharPeca(Pecas *p, float num){
+    if (pilhaCheia(p) == 1) {
+        printf(PILHA_CHEIA);
+    } else {
+        p->topo++;
+        p->pPeca[p->topo] = num;
+        printf("\nEmpilhando peca %.2f\n",num);
+    }
+}
+
+void desempilharPeca(Pecas *p){
+    if (!pilhaVazia(p)) {
+        printf("\nDesempilhando peca: %.2f\n", p->pPeca[p->topo]);
+        p->topo--;
+    } else {
+        printf(PILHA_VAZIA);
+    }
+}
+
+void exibirTopo(Pecas *p){
+    if (!pilhaVazia(p)) {
+        printf("\nTOPO => Posicao: %d, Valor: %.2f\n", p->topo, p->pPeca[p->topo]);
+    } else {
+        printf(PILHA_VAZIA);
+    }
+}
+
+void exibirValoresControle(Pecas *p){
+    printf("\nTOPO: %d Quantidade: %d\n", p->topo, p->qtd);
+}
+
+void desalocarPilha(Pecas *p) {
+    free(p->pPeca);
+}
+
+int main() {
+    Pecas *testePecas;
+    testePecas = (Pecas*) malloc (sizeof(Pecas));
+
+    int qtd;
+
+    printf("\nInforme a quantidade de pecas do notebook: ");
+    scanf("%d", &qtd);
+
+    criarPilha(testePecas, qtd);
+
+    int opcao;
+    float valor;
+
+    do {
+        printf("\n------- Menu -------\n");
+        printf("1. Empilhar peca\n");
+        printf("2. Desempilhar peca\n");
+        printf("3. Exibir topo\n");
+        printf("4. Exibir valores de controle\n");
+        printf("5. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                printf("\nInforme o valor da peca a ser empilhada: ");
+                scanf("%f", &valor);
+                empilharPeca(testePecas, valor);
+                break;
+            case 2:
+                desempilharPeca(testePecas);
+                break;
+            case 3:
+                exibirTopo(testePecas);
+                break;
+            case 4:
+                exibirValoresControle(testePecas);
+                break;
+            case 5:
+                printf("\nEncerrando o programa.\n");
+                break;
+            default:
+                printf("\nOpcao invalida. Escolha novamente.\n");
+        }
+    } while (opcao != 5);
+
+    desalocarPilha(testePecas);
+    free(testePecas);
+
+    return 0;
+}
